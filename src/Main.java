@@ -1,4 +1,5 @@
-import java.util.NoSuchElementException;
+import util.FormatUtil;
+
 import java.util.Scanner;
 
 public class Main {
@@ -10,7 +11,9 @@ public class Main {
             if (x.equals("")) {
                 break;
             } else {
-                System.out.println("yes");
+                if (FormatUtil.inputFormat(x)) {
+                    System.out.println("yes");
+                }
             }
         } while (true);
     }
