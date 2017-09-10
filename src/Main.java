@@ -1,19 +1,16 @@
-import util.FormatUtil;
-
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
-
+        Factory factory = new Factory();
         do{
-            String x = s.nextLine();
-            if (x.equals("")) {
+            String input = s.nextLine();
+            if (input.equals("")) {
+                //factory
                 break;
             } else {
-                if (FormatUtil.inputFormat(x)) {
-                    System.out.println("yes");
-                }
+                factory.execute(input);
             }
         } while (true);
     }

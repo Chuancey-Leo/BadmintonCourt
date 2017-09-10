@@ -1,24 +1,106 @@
 package util;
 
+import entity.PriceTime;
+import entity.User;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+/**
+ * 格式工具类
+ */
 public class FormatUtil {
+    private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
     /**
-     * 输入时的整体匹配
-     * 其中润年的月份天数也能匹配
+     * input整体格式验证
      * @param input
      * @return
      */
-    public static boolean inputFormat(String input) {
-        String regx = "U(\\d){3} " +
+    public static boolean inputFormat(String input, User user) {
+        String bookingRegx = "U(\\d){3} " +
                 "((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))[ ]"
-                +"((([0-1][0-9])|2[0-3]):00~(([0-1][0-9])|2[0-3]):00)([ ][A-Z]|[ ][A-Z][ ][A-Z])";
+                +"((([0-1][0-9])|2[0-3]):00~(([0-1][0-9])|2[0-3]):00)([ ][A-D])";
 
-        Pattern pattern = Pattern.compile(regx);
-        Matcher matcher = pattern.matcher(input);
-        return matcher.matches();
+        String cancelRegx = "U(\\d){3} " +
+                "((([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29))[ ]"
+                +"((([0-1][0-9])|2[0-3]):00~(([0-1][0-9])|2[0-3]):00)([ ][A-D]|[ ][A-D][ ][C])";
+
+        Pattern bookingPattern = Pattern.compile(bookingRegx);
+        Matcher bookingMatcher = bookingPattern.matcher(input);
+        Pattern cancelPattern = Pattern.compile(cancelRegx);
+        Matcher cancelMatcher = cancelPattern.matcher(input);
+
+        if (bookingMatcher.matches()) {
+            return true;
+        } else if (cancelMatcher.matches()) {
+            user.setBooking(false);
+            return true;
+        } else {
+            return false;
+        }
     }
 
+    /**
+     * 时间片格式验证
+     * @param timeSegment
+     * @return
+     * @throws Exception
+     */
+    public static boolean timeSegmentFormat(String timeSegment) throws Exception{
+        String regx = "[0-2][0-9]:00~[0-2][0-9]";
+        Pattern pattern = Pattern.compile(regx);
+        Matcher timeSegmentMatcher = pattern.matcher(timeSegment);
+
+        if (timeSegmentMatcher.matches()) {
+            String[] times = timeSegment.split("~");
+            Date dt1 = sdf.parse(times[0]);
+            Date dt2 = sdf.parse(times[1]);
+
+            if (dt1.getTime() >= dt2.getTime()) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * 判断时间片是否有交集
+     * @param exist
+     * @param user
+     * @return
+     */
+    public static boolean compareTimeSegment(User exist,
+                                             User user) {
+        PriceTime existPriceTime = exist.getPriceTime();
+        PriceTime priceTime = user.getPriceTime();
+        String existCourt = exist.getBookingName();
+        String court = user.getBookingName();
+
+        if (existPriceTime.getDate().equals(priceTime.getDate()) && existCourt.equals(court)) {
+            String[] existTimeSegment = existPriceTime.getTimeSegment().split("~");
+            String[] timeSegment = priceTime.getTimeSegment().split("~");
+
+            String a = existTimeSegment[0].replaceAll(":", " ");
+            String b = existTimeSegment[1].replaceAll(":", " ");
+
+            String c = timeSegment[0].replaceAll(":", " ");
+            String d = timeSegment[1].replaceAll(":", " ");
+
+            int left = Integer.valueOf(a) - Integer.valueOf(d);
+            int right = Integer.valueOf(b) - Integer.valueOf(c);
+
+            if (left*right < 0) {
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
 }
