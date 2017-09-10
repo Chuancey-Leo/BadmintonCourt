@@ -12,6 +12,12 @@ public class PriceTime {
         this.date = date;
         this.timeSegment = timeSegment;
     }
+
+    public PriceTime(String timeSegment, int price) {
+        this.timeSegment = timeSegment;
+        this.price = price;
+    }
+
     public String getDate() {
         return date;
     }

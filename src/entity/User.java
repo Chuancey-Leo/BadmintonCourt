@@ -1,7 +1,5 @@
 package entity;
 
-import java.util.List;
-
 public class User {
     //用户id
     private String userId;
@@ -15,7 +13,6 @@ public class User {
     private String bookingName;
 
 
-    @Override
     public String toString() {
         return userId+priceTime.getDate()+priceTime.getTimeSegment()+bookingName;
     }

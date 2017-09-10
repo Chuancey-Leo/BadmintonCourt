@@ -31,7 +31,7 @@ public class Factory {
      */
     public void execute(String input) {
 
-        //实例化对应记录
+        //实例化对应用户记录
         User user = new User();
 
         //检测整体格式是否正确
@@ -40,7 +40,7 @@ public class Factory {
             return;
         }
 
-        //检测时间格式时候正确,并对entity赋值
+        //检测时间格式是否正确,并对entity赋值
         boolean flag = userDao.values(input.split(" "), user);
         if (!flag) {
             System.out.println("> Error: the booking is invalid!");
@@ -84,7 +84,7 @@ public class Factory {
     }
 
     public void getSumList() {
-        int sum1 = courtA.getSumPrice();
+
     }
 
 

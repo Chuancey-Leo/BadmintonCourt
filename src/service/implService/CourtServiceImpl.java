@@ -12,17 +12,49 @@ public class CourtServiceImpl implements CourtService {
     @Override
     public void booking(User user, Court court) {
         boolean flag=false;
+        boolean timeSegmentFlag = false;
+        try {
+            timeSegmentFlag = FormatUtil.timeSegmentFormat(
+                    user.getPriceTime()
+                    .getTimeSegment(), court);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!timeSegmentFlag) {
+            System.out.println("> Error: the booking is invalid!");
+            return;
+        }
+
         for (User u: court.getUserList()) {
              flag = FormatUtil.compareTimeSegment(u, user);
             if (flag) {
                 System.out.println("> Success: the booking is accepted!");
+                try {
+                    int hours = FormatUtil.costTime(
+                            user.getPriceTime().getTimeSegment());
+
+                    court.addUser(user);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }
+        if (court.getUserList().size() == 0) {
+            System.out.println("> Success: the booking is accepted!");
+            try {
+                int hours = FormatUtil.costTime(user.getPriceTime().getTimeSegment());
 
+                flag = true;
+                court.addUser(user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         if (!flag){
             System.out.println("> Error: the booking conflicts with existing bookings!");
-            court.addUser(user);
         }
 
     }
@@ -30,7 +62,7 @@ public class CourtServiceImpl implements CourtService {
     @Override
     public void cancel(User user, Court court) {
         for (User u:court.getUserList()) {
-            if (u.toString().equals(user.toString())) {
+            if (u.toString().equals(user.toString()) && u.isBooking()) {
                 System.out.println("> Success: the booking is accepted!");
                 court.getUserList().remove(u);
                 u.setBooking(false);
@@ -43,6 +75,6 @@ public class CourtServiceImpl implements CourtService {
 
     @Override
     public int sum() {
-        return 0;
+
     }
 }

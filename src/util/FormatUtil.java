@@ -1,8 +1,10 @@
 package util;
 
+import entity.Court;
 import entity.PriceTime;
 import entity.User;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +17,7 @@ public class FormatUtil {
     private static SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
     /**
-     * input整体格式验证
+     * 输入整体格式验证
      * @param input
      * @return
      */
@@ -44,34 +46,48 @@ public class FormatUtil {
     }
 
     /**
-     * 时间片格式验证
+     * 时间片格式验证,用户可能输入的区间在
+     * 多个场地时间表区间,即跨区间选择
      * @param timeSegment
      * @return
      * @throws Exception
      */
-    public static boolean timeSegmentFormat(String timeSegment) throws Exception{
-        String regx = "[0-2][0-9]:00~[0-2][0-9]";
+    public static boolean timeSegmentFormat(String timeSegment, Court court) throws Exception{
+        String regx = "[0-2][0-9]:00~[0-2][0-9]:00";
         Pattern pattern = Pattern.compile(regx);
         Matcher timeSegmentMatcher = pattern.matcher(timeSegment);
 
         if (timeSegmentMatcher.matches()) {
-            String[] times = timeSegment.split("~");
-            Date dt1 = sdf.parse(times[0]);
-            Date dt2 = sdf.parse(times[1]);
 
-            if (dt1.getTime() >= dt2.getTime()) {
-                return false;
-            } else {
-                return true;
+            String[] times = timeSegment.split("~");
+            for (int i = 0; i < times.length; i++) {
+                times[i] = times[i].replaceAll(":","");
             }
-        } else {
-            return false;
+
+            if (Integer.valueOf(times[1]) <= Integer.valueOf(times[0])) {
+                return false;
+            }
+
+            for (PriceTime p:court.getPriceTimeList()) {
+                String[] existTimes = p.getTimeSegment().split("~");
+                for (int i = 0; i < existTimes.length; i++) {
+                    existTimes[i] = existTimes[i].replaceAll(":","");
+                }
+                if (Integer.valueOf(times[0]) < Integer.valueOf(existTimes[0])) {
+                    return false;
+                } else if (Integer.valueOf(times[1]) > Integer.valueOf(existTimes[1])) {
+                    times[0] = existTimes[1];
+                } else if (Integer.valueOf(times[1]) <= Integer.valueOf(existTimes[1])) {
+                    return true;
+                }
+            }
         }
 
+        return false;
     }
 
     /**
-     * 判断时间片是否有交集
+     * 判断输入时间片与已预订时间片是否有交集
      * @param exist
      * @param user
      * @return
@@ -83,15 +99,17 @@ public class FormatUtil {
         String existCourt = exist.getBookingName();
         String court = user.getBookingName();
 
-        if (existPriceTime.getDate().equals(priceTime.getDate()) && existCourt.equals(court)) {
+        if (existPriceTime.getDate().equals(priceTime.getDate())
+                && existCourt.equals(court)
+                && exist.isBooking()) {
             String[] existTimeSegment = existPriceTime.getTimeSegment().split("~");
             String[] timeSegment = priceTime.getTimeSegment().split("~");
 
-            String a = existTimeSegment[0].replaceAll(":", " ");
-            String b = existTimeSegment[1].replaceAll(":", " ");
+            String a = existTimeSegment[0].replaceAll(":", "");
+            String b = existTimeSegment[1].replaceAll(":", "");
 
-            String c = timeSegment[0].replaceAll(":", " ");
-            String d = timeSegment[1].replaceAll(":", " ");
+            String c = timeSegment[0].replaceAll(":", "");
+            String d = timeSegment[1].replaceAll(":", "");
 
             int left = Integer.valueOf(a) - Integer.valueOf(d);
             int right = Integer.valueOf(b) - Integer.valueOf(c);
@@ -103,4 +121,17 @@ public class FormatUtil {
         }
         return true;
     }
+
+
+    public static int costTime(String timeSegment) throws Exception{
+        String[] times = timeSegment.split("~");
+        Date dt1 = sdf.parse(times[0]);
+        Date dt2 = sdf.parse(times[1]);
+        int hours = (int) ((dt2.getTime() - dt1.getTime())/(1000 * 60 * 60));
+
+        return hours;
+    }
+
+
+
 }
