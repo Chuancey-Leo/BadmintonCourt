@@ -3,14 +3,14 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
-        Factory factory = new Factory();
+        Controller controller = new Controller();
         do{
             String input = s.nextLine();
             if (input.equals("")) {
-                //factory
+                controller.getSumList();
                 break;
             } else {
-                factory.execute(input);
+                controller.execute(input);
             }
         } while (true);
     }

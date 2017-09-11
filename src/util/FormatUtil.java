@@ -3,6 +3,8 @@ package util;
 import entity.Court;
 import entity.PriceTime;
 import entity.User;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
@@ -82,7 +84,6 @@ public class FormatUtil {
                 }
             }
         }
-
         return false;
     }
 
@@ -122,16 +123,20 @@ public class FormatUtil {
         return true;
     }
 
-
-    public static int costTime(String timeSegment) throws Exception{
-        String[] times = timeSegment.split("~");
-        Date dt1 = sdf.parse(times[0]);
-        Date dt2 = sdf.parse(times[1]);
-        int hours = (int) ((dt2.getTime() - dt1.getTime())/(1000 * 60 * 60));
-
-        return hours;
+    /**
+     * 转化yyyy-MM-dd为星期几
+     * @param date
+     * @return
+     */
+    public static String dateToWeek(String date) {
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdw = new SimpleDateFormat("E");
+        Date d = null;
+        try {
+            d = sd.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return sdw.format(d);
     }
-
-
-
 }

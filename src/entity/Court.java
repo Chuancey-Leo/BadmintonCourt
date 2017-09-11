@@ -25,6 +25,9 @@ public class Court {
     }};
 
 
+    public Court(String name) {
+        this.name = name;
+    }
     public String getName() {
         return name;
     }
@@ -52,5 +55,10 @@ public class Court {
     public void addUser(User user) {
         this.userList.add(user);
     }
-
+    public List<PriceTime> getPriceWeekendList() {
+        return priceWeekendList;
+    }
+    public void setPriceWeekendList(List<PriceTime> priceWeekendList) {
+        this.priceWeekendList = priceWeekendList;
+    }
 }

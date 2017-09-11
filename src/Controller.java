@@ -6,7 +6,13 @@ import service.CourtService;
 import service.implService.CourtServiceImpl;
 import util.FormatUtil;
 
-public class Factory {
+import java.util.ArrayList;
+import java.util.List;
+
+/*
+*相关的逻辑控制
+* */
+public class Controller {
 
     //统一管理所有场地
     private Court courtA;
@@ -17,16 +23,16 @@ public class Factory {
 
     private static UserDao userDao = new UserDaoImpl();
 
-    public Factory() {
-        courtA = new Court();
-        courtB = new Court();
-        courtC = new Court();
-        courtD = new Court();
+    public Controller() {
+        courtA = new Court("A");
+        courtB = new Court("B");
+        courtC = new Court("C");
+        courtD = new Court("D");
         courtService = new CourtServiceImpl();
     }
 
     /**
-     *
+     *执行命令,并分发相应操作
      * @param input
      */
     public void execute(String input) {
@@ -84,7 +90,14 @@ public class Factory {
     }
 
     public void getSumList() {
+        List<Court> courts = new ArrayList<Court>(){{
+            add(courtA);
+            add(courtB);
+            add(courtC);
+            add(courtD);
+        }};
 
+        courtService.sum(courts);
     }
 
 

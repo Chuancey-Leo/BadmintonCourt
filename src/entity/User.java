@@ -4,7 +4,7 @@ public class User {
     //用户id
     private String userId;
     //个人预订或取消场地的花费
-    private String bookingPrice;
+    private double bookingPrice;
     //预订或取消记录
     private PriceTime priceTime;
     //是否预订了场地
@@ -22,10 +22,10 @@ public class User {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-    public String getBookingPrice() {
+    public double getBookingPrice() {
         return bookingPrice;
     }
-    public void setBookingPrice(String bookingPrice) {
+    public void setBookingPrice(double bookingPrice) {
         this.bookingPrice = bookingPrice;
     }
     public boolean isBooking() {
