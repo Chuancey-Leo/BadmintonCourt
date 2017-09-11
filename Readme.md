@@ -14,6 +14,7 @@
 - service **业务层接口**
   - implService **业务层实现**
 - util **工具**
+- lib **junit依赖的相关jar包**
 
 ## 如何运行该程序
 在src根目录中,运行Main.java中的main()函数
