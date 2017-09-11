@@ -5,8 +5,13 @@ import entity.User;
 import service.CourtService;
 import util.CalcUtil;
 import util.ComparatorDate;
+import util.FileUtil;
 import util.FormatUtil;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.IntSummaryStatistics;
 import java.util.List;
@@ -112,6 +117,7 @@ public class CourtServiceImpl implements CourtService {
 
 
         System.out.println("> 收入汇总");
+
         System.out.println("> ---");
         for (int i = 0; i < courts.size(); i++) {
             System.out.println("> 场地:"+courts.get(i).getName());
@@ -144,5 +150,7 @@ public class CourtServiceImpl implements CourtService {
 
         System.out.println("> ---");
         System.out.println("> 总计:"+(int)sum+"元");
+
+        FileUtil.printToTxt(courts);
     }
 }
