@@ -6,14 +6,14 @@
 - **IntelliJ IDEA**
 		
 ## 代码结构
-├── dao **数据接口**
-│   └── impl **数据接口实现**
-├── entity **实体**
-├── Controller.java **控制类**
-├── Main.java **运行入口**
-├── service **业务层接口**
-│   └── implService **业务层实现**
-└── util **工具**
+- dao **数据接口**
+  - impl **数据接口实现**
+- entity **实体**
+- Controller.java **控制类**
+- Main.java **运行入口**
+- service **业务层接口**
+  - implService **业务层实现**
+- util **工具**
 
 ## 如何运行该程序
 在src根目录中,运行Main.java中的main()函数
